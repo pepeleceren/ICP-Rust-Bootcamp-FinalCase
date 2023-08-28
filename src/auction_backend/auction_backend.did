@@ -1,3 +1,73 @@
+type Bid = record {
+    auction : nat64;
+    currency : text;
+    amount : nat32;
+    owner : principal;
+
+};
+
+type CreateBid = record {
+    currency : text;
+    amount : nat32;
+};
+
+type Auction = record {
+    title : text;
+    detail : text;
+    currency : text;
+    amount : nat32;
+    end_time : text;
+    bids : vec Bid;
+    main_bid : Bid;
+    owner : principal;
+    new_owner : principal;
+    is_active : bool;
+};
+
+type CreateAuction = record {
+    title : text;
+    detail : text;
+    currency : text;
+    amount : nat32;
+    end_time : text;
+    is_active : bool;
+};
+
+type BidError = variant {
+    AlreadyMaxBid;
+    AuctionIsNotActive;
+    NoSuchAuction;
+    BidAmountLessThanCurrent;
+    UpdateError;
+    OwnerCantBid;
+};
+
+type AuctionError = variant {
+    AuctionIsNotActive;
+    NoSuchAuction;
+    AccessRejected;
+    UpdateError;
+    InvalidDate;
+};
+
+type ResultBid = variant {
+    Ok;
+    Err : BidError;
+};
+
+type ResultAuction = variant {
+    Ok;
+    Err : AuctionError;
+};
+
 service : {
-    "greet": (text) -> (text) query;
-}
+    "get_auction" : (nat64) -> (opt Auction) query;
+    "get_auction_list" : () -> (opt vec Auction) query;
+    "get_auctions_number" : () -> (nat64);
+    "get_most_bidded_auction" : () -> (opt Auction);
+    "get_auction_bids" : (nat64) -> (opt vec Bid);
+    "create_auction" : (nat64, CreateAuction) -> (ResultAuction);
+    "edit_auction" : (nat64, CreateAuction) -> (ResultAuction);
+    "end_proposal" : (nat64) -> (ResultAuction);
+    "insert_bid" : (nat64, CreateBid) -> (ResultBid);
+};
