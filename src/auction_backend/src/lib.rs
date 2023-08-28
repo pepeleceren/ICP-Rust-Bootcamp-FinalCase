@@ -86,10 +86,6 @@ thread_local! {
     static AUCTION_MAP: RefCell<StableBTreeMap<u64, Auction, Memory>> = RefCell::new(StableBTreeMap::init(
         MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(0))),
     ));
-
-    static BIDS_MAP: RefCell<StableBTreeMap<u64, Auction, Memory>> = RefCell::new(StableBTreeMap::init(
-        MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(1))),
-    ));
 }
 
 fn validate_iso8601_datetime(datetime: &str) -> Result<(), String> {
